@@ -2,7 +2,6 @@
     font-family: monospace;
     white-space: pre;
     line-height: 1em;
-    font-size: 3pt;
 }
 
 body {
@@ -44,4 +43,8 @@ body.dragging #drop-area {
 
 #drop-area p::selection {
     display: none;
+}
+
+#copy-button:hover {
+    cursor: pointer;
 }

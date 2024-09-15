@@ -1,6 +1,10 @@
 let uploadedImage = null;
-const inputWidth = document.getElementById('width-input');
-const defaultInputWidthMax = 200;
+
+const widthInput = document.getElementById('width-input');
+const defaultWidthInputMax = 200;
+
+const fontSizeSpinner = document.getElementById('font-size-spinner');
+let fontSize = fontSizeSpinner.value;
 
 // ASCII variations
 const asciiChars = [
@@ -24,7 +28,7 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
     loadImage(file);
 });
 
-function processImageToASCII(img, width = defaultInputWidthMax) {
+function processImageToASCII(img, width = defaultWidthInputMax) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -38,7 +42,10 @@ function processImageToASCII(img, width = defaultInputWidthMax) {
     const imageData = ctx.getImageData(0, 0, width, height);
 
     const asciiArt = convertToASCII(imageData);
-    document.getElementById("ascii-output").textContent = asciiArt;
+
+    const asciiOutput = document.getElementById("ascii-output");
+    asciiOutput.textContent = asciiArt;
+    asciiOutput.style.fontSize = fontSize + "pt"; // Apply the selected font size
 }
 
 function convertToASCII(imageData) {
@@ -72,7 +79,7 @@ function convertToASCII(imageData) {
 
 function regenerate() {
     if (uploadedImage) {
-        const width = parseInt(inputWidth.value, 10);
+        const width = parseInt(widthInput.value, 10);
         processImageToASCII(uploadedImage, width);
     } else {
         const savedImageData = sessionStorage.getItem('uploadedImage');
@@ -82,9 +89,9 @@ function regenerate() {
                 uploadedImage = img;
 
                 // Update the input range based on the image size
-                setInputWidthMax(img.width);
+                setwidthInputMax(img.width);
 
-                processImageToASCII(img, defaultInputWidthMax);
+                processImageToASCII(img, defaultWidthInputMax);
             };
             img.src = savedImageData;
         } else {
@@ -102,7 +109,7 @@ function loadImage(file) {
             uploadedImage = img;
 
             // Update the input range based on the image size
-            setInputWidthMax(img.width);
+            setwidthInputMax(img.width);
 
             processImageToASCII(img);
 
@@ -116,23 +123,23 @@ function loadImage(file) {
 // Input handlers
 function clearImage() {
     uploadedImage = null;
-    inputWidth.disabled = true;
+    widthInput.disabled = true;
     sessionStorage.removeItem('uploadedImage');
     document.getElementById("ascii-output").textContent = '';
 }
 
 // Update the image width based on the input range value
-inputWidth.addEventListener('input', function () {
-    const width = parseInt(inputWidth.value, 10);
+widthInput.addEventListener('input', function () {
+    const width = parseInt(widthInput.value, 10);
     if (uploadedImage) {
         processImageToASCII(uploadedImage, width);
     }
 });
 
-function setInputWidthMax(width) {
-    inputWidth.max = width;
-    inputWidth.disabled = false; // Enable the input range
-    inputWidth.value = defaultInputWidthMax; // Set fixed value
+function setwidthInputMax(width) {
+    widthInput.max = width;
+    widthInput.disabled = false; // Enable the input range
+    widthInput.value = defaultWidthInputMax; // Set fixed value
 }
 
 // Handle radio button changes
@@ -140,7 +147,7 @@ document.getElementById('variation-form').addEventListener('change', function ()
     const selectedVariation = parseInt(document.querySelector('input[name="variation"]:checked').value, 10);
     variation = selectedVariation;
     if (uploadedImage) {
-        const width = parseInt(inputWidth.value, 10);
+        const width = parseInt(widthInput.value, 10);
         processImageToASCII(uploadedImage, width);
     }
 });
@@ -157,6 +164,18 @@ document.getElementById('copy-button').addEventListener('click', function () {
 
 // Handle Drag and drop
 const dropArea = document.body;
+
+// Handle font size
+document.getElementById('font-size-spinner').addEventListener('input', function () {
+    fontSize = parseInt(this.value, 10);
+
+    if (fontSize > 6) fontSize = 6;
+    else if (fontSize < 1) fontSize = 1;
+
+    this.value = fontSize;
+
+    document.getElementById('ascii-output').style.fontSize = fontSize + "pt";
+});
 
 dropArea.addEventListener('dragover', (event) => {
     event.preventDefault();

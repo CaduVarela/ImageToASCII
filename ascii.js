@@ -21,25 +21,7 @@ let variation = parseInt(document.querySelector('input[name="variation"]:checked
 // Image to ASCII conversion
 document.getElementById("upload-image").addEventListener("change", function (e) {
     const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-        const img = new Image();
-        img.onload = function () {
-            uploadedImage = img;
-
-            // Update the input range based on the image size
-            setInputWidthMax(img.width);
-
-            processImageToASCII(img);
-
-            sessionStorage.setItem('uploadedImage', event.target.result);
-        };
-
-        img.src = event.target.result;
-    };
-
-    reader.readAsDataURL(file);
+    loadImage(file);
 });
 
 function processImageToASCII(img, width = defaultInputWidthMax) {
@@ -111,6 +93,26 @@ function regenerate() {
     }
 }
 
+// Util
+function loadImage(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+            uploadedImage = img;
+
+            // Update the input range based on the image size
+            setInputWidthMax(img.width);
+
+            processImageToASCII(img);
+
+            sessionStorage.setItem('uploadedImage', e.target.result);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
 // Input handlers
 function clearImage() {
     uploadedImage = null;
@@ -167,22 +169,7 @@ document.addEventListener('drop', (event) => {
 
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const img = new Image();
-            img.onload = function () {
-                uploadedImage = img;
-
-                // Update the input range based on the image size
-                setInputWidthMax(img.width);
-
-                processImageToASCII(img);
-
-                sessionStorage.setItem('uploadedImage', e.target.result);
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+        loadImage(file);
     } else {
         alert('You must drop an image');
     }

@@ -4,14 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Image to ASCII</title>
-        <style>
-            #ascii-output {
-                font-family: monospace;
-                white-space: pre;
-                line-height: 1em;
-                font-size: 3pt;
-            }
-        </style>
+        <link rel="stylesheet" href="./style.css">
     </head>
     <body>
         <h1>Image to ASCII Converter</h1>
@@ -50,6 +43,11 @@
             <input type="radio" id="variation7" name="variation" value="6">
             <label for="variation7">Smooth Detailed 2</label><br>
         </form>
+
+        <div id="drop-area">
+            <p>Drop image here</p>
+            <input type="file" id="upload-image" accept="image/*" style="display: none;" />
+        </div>        
 
         <button id="copy-button">Copy to clipboard</button>
         

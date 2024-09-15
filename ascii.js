@@ -149,7 +149,42 @@ document.getElementById('copy-button').addEventListener('click', function () {
     if (asciiArt) {
         navigator.clipboard.writeText(asciiArt)
     } else {
-        alert(navigator.clipboard.writeText(''));
+        navigator.clipboard.writeText('');
+    }
+});
+
+// Handle Drag and drop
+document.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    document.body.classList.add('dragging');
+});
+
+document.addEventListener('dragleave', () => document.body.classList.remove('dragging'));
+
+document.addEventListener('drop', (event) => {
+    event.preventDefault();
+    document.body.classList.remove('dragging');
+
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                uploadedImage = img;
+
+                // Update the input range based on the image size
+                setInputWidthMax(img.width);
+
+                processImageToASCII(img);
+
+                sessionStorage.setItem('uploadedImage', e.target.result);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert('You must drop an image');
     }
 });
 

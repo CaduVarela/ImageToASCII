@@ -1,8 +1,8 @@
 let uploadedImage = null;
-
 const inputWidth = document.getElementById('input-width');
 const defaultInputWidthMax = 200;
 
+// ASCII variations
 const asciiChars = [
     // "Minimalist"
     ["@", "#", "x", " ", " ", " "],
@@ -16,7 +16,7 @@ const asciiChars = [
     ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "], // better with dark
     ["@", "Q", "#", "x", "+", "-", ":", "^", ">", ".", " "] // better with light
 ];
-const variation = 6;
+let variation = parseInt(document.querySelector('input[name="variation"]:checked').value, 10); // Default value
 
 // Image to ASCII conversion
 document.getElementById("upload-image").addEventListener("change", function (e) {
@@ -41,20 +41,6 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
 
     reader.readAsDataURL(file);
 });
-
-// Update the image width based on the input range value
-inputWidth.addEventListener('input', function () {
-    const width = parseInt(inputWidth.value, 10);
-    if (uploadedImage) {
-        processImageToASCII(uploadedImage, width);
-    }
-});
-
-function setInputWidthMax(width) {
-    inputWidth.max = width;
-    inputWidth.disabled = false; // Enable the input range
-    inputWidth.value = defaultInputWidthMax; // Set fixed value
-}
 
 function processImageToASCII(img, width = defaultInputWidthMax) {
     const canvas = document.getElementById("canvas");
@@ -113,7 +99,7 @@ function regenerate() {
             img.onload = function () {
                 uploadedImage = img;
 
-                // Update the image width based on the input range value
+                // Update the input range based on the image size
                 setInputWidthMax(img.width);
 
                 processImageToASCII(img, defaultInputWidthMax);
@@ -132,6 +118,30 @@ function clearImage() {
     sessionStorage.removeItem('uploadedImage');
     document.getElementById("ascii-output").textContent = '';
 }
+
+// Update the image width based on the input range value
+inputWidth.addEventListener('input', function () {
+    const width = parseInt(inputWidth.value, 10);
+    if (uploadedImage) {
+        processImageToASCII(uploadedImage, width);
+    }
+});
+
+function setInputWidthMax(width) {
+    inputWidth.max = width;
+    inputWidth.disabled = false; // Enable the input range
+    inputWidth.value = defaultInputWidthMax; // Set fixed value
+}
+
+// Handle radio button changes
+document.getElementById('variation-form').addEventListener('change', function () {
+    const selectedVariation = parseInt(document.querySelector('input[name="variation"]:checked').value, 10);
+    variation = selectedVariation;
+    if (uploadedImage) {
+        const width = parseInt(inputWidth.value, 10);
+        processImageToASCII(uploadedImage, width);
+    }
+});
 
 // Automatically generate ASCII art if image is available in sessionStorage
 window.onload = function() {

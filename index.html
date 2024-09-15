@@ -23,9 +23,33 @@
         
         <div>
             <label for="input-width">min</label>
-            <input type="range" id="input-width" min="160" max="800" value="200" step="1" disabled />
+            <input type="range" id="input-width" min="140" max="800" value="200" step="1" disabled />
             <label for="input-width">max</label>
         </div>
+
+        <h2>Select ASCII Variation</h2>
+        <form id="variation-form">
+            <input type="radio" id="variation1" name="variation" value="0" checked>
+            <label for="variation1">Minimalist 1</label><br>
+            
+            <input type="radio" id="variation2" name="variation" value="1">
+            <label for="variation2">Minimalist 2</label><br>
+            
+            <input type="radio" id="variation3" name="variation" value="2">
+            <label for="variation3">Reduced</label><br>
+            
+            <input type="radio" id="variation4" name="variation" value="3">
+            <label for="variation4">Detailed 1</label><br>
+            
+            <input type="radio" id="variation5" name="variation" value="4">
+            <label for="variation5">Detailed 2</label><br>
+            
+            <input type="radio" id="variation6" name="variation" value="5">
+            <label for="variation6">Smooth Detailed 1</label><br>
+            
+            <input type="radio" id="variation7" name="variation" value="6">
+            <label for="variation7">Smooth Detailed 2</label><br>
+        </form>
         
         <pre id="ascii-output"></pre>
 

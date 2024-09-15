@@ -23,7 +23,7 @@ function processImageToASCII(img) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 440;
+    const width = 400;
     const aspectRatio = img.height / img.width;
     const height = Math.floor((width * aspectRatio) / 2);
 
@@ -41,7 +41,6 @@ function regenerate() {
     if (uploadedImage) {
         processImageToASCII(uploadedImage);
     } else {
-        // Retrieve the base64 image data from sessionStorage
         const savedImageData = sessionStorage.getItem('uploadedImage');
         if (savedImageData) {
             const img = new Image();
@@ -64,12 +63,19 @@ function clearImage() {
 }
 
 const asciiChars = [
-    ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", "."],
-    ["@", "#", "8", "&", "O", "S", "$", "*", ":", ".", " "],
-    ["@", "#", "8", "&", "W", "M", "X", "Z", "S", "0", "?", "*", "+", ":", ".", " "]
+    // "Minimalist"
+    ["@", "#", "x", " ", " ", " "],
+    ["@", "#", "x", "-", ":", " "],
+    // "Reduced"
+    ["@", "#", "x", " ", " "],
+    // "Detailed"
+    ["@", "Q", '#', '-', ':', ' ', ' '],
+    ["@", "Q", "#", "x", " ", " ", " "],
+    // "Smooth Detailed"
+    ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "]
 ];
 
-const variation = 2;
+const variation = 5;
 
 function convertToASCII(imageData) {
     const { data, width, height } = imageData;

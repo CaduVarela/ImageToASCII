@@ -1,5 +1,5 @@
 let uploadedImage = null;
-const inputWidth = document.getElementById('input-width');
+const inputWidth = document.getElementById('width-input');
 const defaultInputWidthMax = 200;
 
 // ASCII variations

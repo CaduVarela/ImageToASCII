@@ -1,5 +1,21 @@
 let uploadedImage = null;
 
+const asciiChars = [
+    // "Minimalist"
+    ["@", "#", "x", " ", " ", " "],
+    ["@", "#", "x", "-", ":", " "],
+    // "Reduced"
+    ["@", "#", "x", " ", " "],
+    // "Detailed"
+    ["@", "Q", '#', '-', ':', ' ', ' '],
+    ["@", "Q", "#", "x", " ", " ", " "],
+    // "Smooth Detailed"
+    ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "], // better with dark
+    ["@", "Q", "#", "x", "+", "-", ":", "^", ">", ".", " "], // better with light
+];
+const variation = 6;
+
+// Image to ASCII conversion
 document.getElementById("upload-image").addEventListener("change", function (e) {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -37,47 +53,6 @@ function processImageToASCII(img) {
     document.getElementById("ascii-output").textContent = asciiArt;
 }
 
-function regenerate() {
-    if (uploadedImage) {
-        processImageToASCII(uploadedImage);
-    } else {
-        const savedImageData = sessionStorage.getItem('uploadedImage');
-        if (savedImageData) {
-            const img = new Image();
-            img.onload = function () {
-                uploadedImage = img;
-                processImageToASCII(img);
-            };
-            img.src = savedImageData;
-        } else {
-            document.getElementById("ascii-output").textContent = '';
-            // alert('Nenhuma imagem foi carregada ainda.');
-        }
-    }
-}
-
-function clearImage() {
-    uploadedImage = null;
-    sessionStorage.removeItem('uploadedImage');
-    document.getElementById("ascii-output").textContent = '';
-}
-
-const asciiChars = [
-    // "Minimalist"
-    ["@", "#", "x", " ", " ", " "],
-    ["@", "#", "x", "-", ":", " "],
-    // "Reduced"
-    ["@", "#", "x", " ", " "],
-    // "Detailed"
-    ["@", "Q", '#', '-', ':', ' ', ' '],
-    ["@", "Q", "#", "x", " ", " ", " "],
-    // "Smooth Detailed"
-    ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "], // better with dark
-    ["@", "Q", "#", "x", "+", "-", ":", "^", ">", ".", " "], // better with light
-];
-
-const variation = 6;
-
 function convertToASCII(imageData) {
     const { data, width, height } = imageData;
     let asciiStr = "";
@@ -105,6 +80,31 @@ function convertToASCII(imageData) {
     }
 
     return asciiStr;
+}
+
+function regenerate() {
+    if (uploadedImage) {
+        processImageToASCII(uploadedImage);
+    } else {
+        const savedImageData = sessionStorage.getItem('uploadedImage');
+        if (savedImageData) {
+            const img = new Image();
+            img.onload = function () {
+                uploadedImage = img;
+                processImageToASCII(img);
+            };
+            img.src = savedImageData;
+        } else {
+            document.getElementById("ascii-output").textContent = '';
+        }
+    }
+}
+
+// Input handlers
+function clearImage() {
+    uploadedImage = null;
+    sessionStorage.removeItem('uploadedImage');
+    document.getElementById("ascii-output").textContent = '';
 }
 
 // Automatically generate ASCII art if image is available in sessionStorage

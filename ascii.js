@@ -72,10 +72,11 @@ const asciiChars = [
     ["@", "Q", '#', '-', ':', ' ', ' '],
     ["@", "Q", "#", "x", " ", " ", " "],
     // "Smooth Detailed"
-    ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "]
+    ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "], // better with dark
+    ["@", "Q", "#", "x", "+", "-", ":", "^", ">", ".", " "], // better with light
 ];
 
-const variation = 5;
+const variation = 6;
 
 function convertToASCII(imageData) {
     const { data, width, height } = imageData;

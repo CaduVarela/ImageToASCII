@@ -156,16 +156,23 @@ document.getElementById('copy-button').addEventListener('click', function () {
 });
 
 // Handle Drag and drop
-document.addEventListener('dragover', (event) => {
+const dropArea = document.body;
+
+dropArea.addEventListener('dragover', (event) => {
     event.preventDefault();
-    document.body.classList.add('dragging');
+    event.dataTransfer.dropEffect = 'copy';
+    dropArea.classList.add('dragging');
 });
 
-document.addEventListener('dragleave', () => document.body.classList.remove('dragging'));
+dropArea.addEventListener('dragleave', (event) => {
+    if (!dropArea.contains(event.relatedTarget)) {
+        dropArea.classList.remove('dragging');
+    }
+});
 
-document.addEventListener('drop', (event) => {
+dropArea.addEventListener('drop', (event) => {
     event.preventDefault();
-    document.body.classList.remove('dragging');
+    dropArea.classList.remove('dragging');
 
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -173,6 +180,8 @@ document.addEventListener('drop', (event) => {
     } else {
         alert('You must drop an image');
     }
+
+    dropArea.classList.remove('dragging');
 });
 
 // Automatically generate ASCII art if image is available in sessionStorage

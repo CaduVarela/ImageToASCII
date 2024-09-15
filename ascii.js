@@ -143,6 +143,16 @@ document.getElementById('variation-form').addEventListener('change', function ()
     }
 });
 
+// Handle copy to clipboard
+document.getElementById('copy-button').addEventListener('click', function () {
+    const asciiArt = document.getElementById("ascii-output").textContent;
+    if (asciiArt) {
+        navigator.clipboard.writeText(asciiArt)
+    } else {
+        alert(navigator.clipboard.writeText(''));
+    }
+});
+
 // Automatically generate ASCII art if image is available in sessionStorage
 window.onload = function() {
     regenerate();

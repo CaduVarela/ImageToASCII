@@ -17,6 +17,9 @@
         <h1>Image to ASCII Converter</h1>
         <input type="file" id="upload-image" accept="image/*" />
         <canvas id="canvas" style="display:none"></canvas>
+
+        <button id="button-regenerate" onclick="regenerate()">Regenerate</button>
+        <button id="button-clear" onclick="clearImage()">Clear</button>
         <pre id="ascii-output"></pre>
 
         <script src="ascii.js"></script>

@@ -7,21 +7,10 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
     reader.onload = function (event) {
         const img = new Image();
         img.onload = function () {
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
+            uploadedImage = img;
+            processImageToASCII(img);
 
-            const width = 440;
-            const aspectRatio = img.height / img.width;
-            const height = Math.floor((width * aspectRatio) / 2);
-
-            canvas.width = width;
-            canvas.height = height;
-
-            ctx.drawImage(img, 0, 0, width, height);
-            const imageData = ctx.getImageData(0, 0, width, height);
-
-            const asciiArt = convertToASCII(imageData);
-            document.getElementById("ascii-output").textContent = asciiArt;
+            sessionStorage.setItem('uploadedImage', event.target.result);
         };
 
         img.src = event.target.result;
@@ -30,15 +19,55 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
     reader.readAsDataURL(file);
 });
 
+function processImageToASCII(img) {
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const width = 440;
+    const aspectRatio = img.height / img.width;
+    const height = Math.floor((width * aspectRatio) / 2);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.drawImage(img, 0, 0, width, height);
+    const imageData = ctx.getImageData(0, 0, width, height);
+
+    const asciiArt = convertToASCII(imageData);
+    document.getElementById("ascii-output").textContent = asciiArt;
+}
+
 function regenerate() {
-    document.getElementById("upload-image").file = document.getElementById("upload-image").file;
+    if (uploadedImage) {
+        processImageToASCII(uploadedImage);
+    } else {
+        // Retrieve the base64 image data from sessionStorage
+        const savedImageData = sessionStorage.getItem('uploadedImage');
+        if (savedImageData) {
+            const img = new Image();
+            img.onload = function () {
+                uploadedImage = img;
+                processImageToASCII(img);
+            };
+            img.src = savedImageData;
+        } else {
+            document.getElementById("ascii-output").textContent = '';
+            // alert('Nenhuma imagem foi carregada ainda.');
+        }
+    }
+}
+
+function clearImage() {
+    uploadedImage = null;
+    sessionStorage.removeItem('uploadedImage');
+    document.getElementById("ascii-output").textContent = '';
 }
 
 const asciiChars = [
     ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", "."],
     ["@", "#", "8", "&", "O", "S", "$", "*", ":", ".", " "],
     ["@", "#", "8", "&", "W", "M", "X", "Z", "S", "0", "?", "*", "+", ":", ".", " "]
-]
+];
 
 const variation = 2;
 
@@ -70,3 +99,8 @@ function convertToASCII(imageData) {
 
     return asciiStr;
 }
+
+// Automatically generate ASCII art if image is available in sessionStorage
+window.onload = function() {
+    regenerate();
+};

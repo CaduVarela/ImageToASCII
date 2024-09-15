@@ -1,5 +1,8 @@
 let uploadedImage = null;
 
+const inputWidth = document.getElementById('input-width');
+const defaultInputWidthMax = 200;
+
 const asciiChars = [
     // "Minimalist"
     ["@", "#", "x", " ", " ", " "],
@@ -11,7 +14,7 @@ const asciiChars = [
     ["@", "Q", "#", "x", " ", " ", " "],
     // "Smooth Detailed"
     ["@", "Q", "#", "x", "-", ".", " ", " ", " ", " ", " "], // better with dark
-    ["@", "Q", "#", "x", "+", "-", ":", "^", ">", ".", " "], // better with light
+    ["@", "Q", "#", "x", "+", "-", ":", "^", ">", ".", " "] // better with light
 ];
 const variation = 6;
 
@@ -24,6 +27,10 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
         const img = new Image();
         img.onload = function () {
             uploadedImage = img;
+
+            // Update the input range based on the image size
+            setInputWidthMax(img.width);
+
             processImageToASCII(img);
 
             sessionStorage.setItem('uploadedImage', event.target.result);
@@ -35,11 +42,24 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
     reader.readAsDataURL(file);
 });
 
-function processImageToASCII(img) {
+// Update the image width based on the input range value
+inputWidth.addEventListener('input', function () {
+    const width = parseInt(inputWidth.value, 10);
+    if (uploadedImage) {
+        processImageToASCII(uploadedImage, width);
+    }
+});
+
+function setInputWidthMax(width) {
+    inputWidth.max = width;
+    inputWidth.disabled = false; // Enable the input range
+    inputWidth.value = defaultInputWidthMax; // Set fixed value
+}
+
+function processImageToASCII(img, width = defaultInputWidthMax) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 400;
     const aspectRatio = img.height / img.width;
     const height = Math.floor((width * aspectRatio) / 2);
 
@@ -84,14 +104,19 @@ function convertToASCII(imageData) {
 
 function regenerate() {
     if (uploadedImage) {
-        processImageToASCII(uploadedImage);
+        const width = parseInt(inputWidth.value, 10);
+        processImageToASCII(uploadedImage, width);
     } else {
         const savedImageData = sessionStorage.getItem('uploadedImage');
         if (savedImageData) {
             const img = new Image();
             img.onload = function () {
                 uploadedImage = img;
-                processImageToASCII(img);
+
+                // Update the image width based on the input range value
+                setInputWidthMax(img.width);
+
+                processImageToASCII(img, defaultInputWidthMax);
             };
             img.src = savedImageData;
         } else {
@@ -103,6 +128,7 @@ function regenerate() {
 // Input handlers
 function clearImage() {
     uploadedImage = null;
+    inputWidth.disabled = true;
     sessionStorage.removeItem('uploadedImage');
     document.getElementById("ascii-output").textContent = '';
 }

@@ -64,7 +64,13 @@ function convertToASCII(imageData) {
             const b = data[offset + 2];
 
             // This calculates the average brightness, returning a number between 0 and 255
-            const brightness = (r + g + b) / 3;
+            const weightedAverage = document.getElementById("weighted-average-checkbox").checked;
+            let brightness;
+
+            if (weightedAverage)
+                brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+            else
+                brightness = (r + g + b) / 3;
 
             // Here we find the corresponding ASCII character index based on the brightness
             const charIndex = Math.floor((brightness / 255) * (asciiChars[variation].length - 1));
@@ -172,6 +178,11 @@ document.getElementById('font-size-spinner').addEventListener('input', function 
     this.value = fontSize;
 
     document.getElementById('ascii-output').style.fontSize = fontSize + "pt";
+});
+
+// Handle weighted average
+document.getElementById('weighted-average-checkbox').addEventListener('change', function () {
+    regenerate();
 });
 
 // Handle Drag and drop

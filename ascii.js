@@ -6,7 +6,7 @@ const defaultWidthInputMax = 200;
 const fontSizeSpinner = document.getElementById('font-size-spinner');
 let fontSize = fontSizeSpinner.value;
 
-// ASCII variations
+/* --- ASCII Variations --- */
 const asciiChars = [
     // "Minimalist"
     ["@", "#", "x", " ", " ", " "],
@@ -22,11 +22,7 @@ const asciiChars = [
 ];
 let variation = parseInt(document.querySelector('input[name="variation"]:checked').value, 10); // Default value
 
-// Image to ASCII conversion
-document.getElementById("upload-image").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    loadImage(file);
-});
+/* --- Main Components --- */
 
 function processImageToASCII(img, width = defaultWidthInputMax) {
     const canvas = document.getElementById("canvas");
@@ -106,7 +102,7 @@ function regenerate() {
     }
 }
 
-// Util
+/* --- Utils --- */
 function loadImage(file) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -126,7 +122,15 @@ function loadImage(file) {
     reader.readAsDataURL(file);
 }
 
-// Input handlers
+/* --- Input handlers --- */
+
+// Image Upload
+document.getElementById("upload-image").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    loadImage(file);
+});
+
+// Clear
 function clearImage() {
     uploadedImage = null;
     widthInput.disabled = true;
@@ -134,7 +138,7 @@ function clearImage() {
     document.getElementById("ascii-output").textContent = '';
 }
 
-// Update the image width based on the input range value
+// Output width
 widthInput.addEventListener('input', function () {
     const width = parseInt(widthInput.value, 10);
     if (uploadedImage) {
@@ -148,7 +152,7 @@ function setwidthInputMax(width) {
     widthInput.value = defaultWidthInputMax; // Set fixed value
 }
 
-// Handle radio button changes
+// ASCII chars variation
 document.getElementById('variation-form').addEventListener('change', function () {
     const selectedVariation = parseInt(document.querySelector('input[name="variation"]:checked').value, 10);
     variation = selectedVariation;
@@ -158,7 +162,7 @@ document.getElementById('variation-form').addEventListener('change', function ()
     }
 });
 
-// Handle copy to clipboard
+// Copy to clipboard
 document.getElementById('copy-button').addEventListener('click', function () {
     const asciiArt = document.getElementById("ascii-output").textContent;
     if (asciiArt) {
@@ -168,7 +172,7 @@ document.getElementById('copy-button').addEventListener('click', function () {
     }
 });
 
-// Handle font size
+// Font size
 document.getElementById('font-size-spinner').addEventListener('input', function () {
     fontSize = parseInt(this.value, 10);
 
@@ -180,12 +184,12 @@ document.getElementById('font-size-spinner').addEventListener('input', function 
     document.getElementById('ascii-output').style.fontSize = fontSize + "pt";
 });
 
-// Handle weighted average
+// Weighted average
 document.getElementById('weighted-average-checkbox').addEventListener('change', function () {
     regenerate();
 });
 
-// Handle Drag and drop
+// Drag and drop
 const dropArea = document.body;
 
 dropArea.addEventListener('dragover', (event) => {
@@ -214,7 +218,7 @@ dropArea.addEventListener('drop', (event) => {
     dropArea.classList.remove('dragging');
 });
 
-// Automatically generate ASCII art if image is available in sessionStorage
+// Page load
 window.onload = function() {
     regenerate();
 };

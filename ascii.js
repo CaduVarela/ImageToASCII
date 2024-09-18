@@ -162,9 +162,6 @@ document.getElementById('copy-button').addEventListener('click', function () {
     }
 });
 
-// Handle Drag and drop
-const dropArea = document.body;
-
 // Handle font size
 document.getElementById('font-size-spinner').addEventListener('input', function () {
     fontSize = parseInt(this.value, 10);
@@ -176,6 +173,9 @@ document.getElementById('font-size-spinner').addEventListener('input', function 
 
     document.getElementById('ascii-output').style.fontSize = fontSize + "pt";
 });
+
+// Handle Drag and drop
+const dropArea = document.body;
 
 dropArea.addEventListener('dragover', (event) => {
     event.preventDefault();

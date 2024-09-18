@@ -1,6 +1,6 @@
 let uploadedImage = null;
 
-const widthInput = document.getElementById('width-input');
+const widthInput = document.getElementById('output-width-input');
 const defaultWidthInputMax = 200;
 
 const fontSizeSpinner = document.getElementById('font-size-spinner');

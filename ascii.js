@@ -1,12 +1,13 @@
 let uploadedImage = null;
 
-const widthInput = document.getElementById('output-width-input');
-const defaultWidthInputMax = 200;
+const OutputWidthInput = document.getElementById('output-width-input');
+const defaultOutputWidthInput = 200;
 
 const fontSizeSpinner = document.getElementById('font-size-spinner');
 let fontSize = fontSizeSpinner.value;
 
 /* --- ASCII Variations --- */
+
 const asciiChars = [
     // "Minimalist"
     ["@", "#", "x", " ", " ", " "],
@@ -24,7 +25,7 @@ let variation = parseInt(document.querySelector('input[name="variation"]:checked
 
 /* --- Main Components --- */
 
-function processImageToASCII(img, width = defaultWidthInputMax) {
+function processImageToASCII(img, width = defaultOutputWidthInput) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -64,9 +65,9 @@ function convertToASCII(imageData) {
             let brightness;
 
             if (weightedAverage)
-                brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+                brightness = 0.299 * r + 0.587 * g + 0.114 * b; // Simulates color distribution as perceived by the human eye
             else
-                brightness = (r + g + b) / 3;
+                brightness = (r + g + b) / 3; // Usual average calculation
 
             // Here we find the corresponding ASCII character index based on the brightness
             const charIndex = Math.floor((brightness / 255) * (asciiChars[variation].length - 1));
@@ -81,7 +82,7 @@ function convertToASCII(imageData) {
 
 function regenerate() {
     if (uploadedImage) {
-        const width = parseInt(widthInput.value, 10);
+        const width = parseInt(OutputWidthInput.value, 10);
         processImageToASCII(uploadedImage, width);
     } else {
         const savedImageData = sessionStorage.getItem('uploadedImage');
@@ -93,7 +94,7 @@ function regenerate() {
                 // Update the input range based on the image size
                 setwidthInputMax(img.width);
 
-                processImageToASCII(img, defaultWidthInputMax);
+                processImageToASCII(img, defaultOutputWidthInput);
             };
             img.src = savedImageData;
         } else {
@@ -103,6 +104,7 @@ function regenerate() {
 }
 
 /* --- Utils --- */
+
 function loadImage(file) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -122,6 +124,19 @@ function loadImage(file) {
     reader.readAsDataURL(file);
 }
 
+function setwidthInputMax(width) {
+    OutputWidthInput.max = width;
+    OutputWidthInput.disabled = false; // Enable the input range
+    OutputWidthInput.value = defaultOutputWidthInput; // Set fixed value
+}
+
+function clearImage() {
+    uploadedImage = null;
+    OutputWidthInput.disabled = true;
+    sessionStorage.removeItem('uploadedImage');
+    document.getElementById("ascii-output").textContent = '';
+}
+
 /* --- Input handlers --- */
 
 // Image Upload
@@ -130,34 +145,20 @@ document.getElementById("upload-image").addEventListener("change", function (e) 
     loadImage(file);
 });
 
-// Clear
-function clearImage() {
-    uploadedImage = null;
-    widthInput.disabled = true;
-    sessionStorage.removeItem('uploadedImage');
-    document.getElementById("ascii-output").textContent = '';
-}
-
 // Output width
-widthInput.addEventListener('input', function () {
-    const width = parseInt(widthInput.value, 10);
+OutputWidthInput.addEventListener('input', function () {
+    const width = parseInt(OutputWidthInput.value, 10);
     if (uploadedImage) {
         processImageToASCII(uploadedImage, width);
     }
 });
-
-function setwidthInputMax(width) {
-    widthInput.max = width;
-    widthInput.disabled = false; // Enable the input range
-    widthInput.value = defaultWidthInputMax; // Set fixed value
-}
 
 // ASCII chars variation
 document.getElementById('variation-form').addEventListener('change', function () {
     const selectedVariation = parseInt(document.querySelector('input[name="variation"]:checked').value, 10);
     variation = selectedVariation;
     if (uploadedImage) {
-        const width = parseInt(widthInput.value, 10);
+        const width = parseInt(OutputWidthInput.value, 10);
         processImageToASCII(uploadedImage, width);
     }
 });
